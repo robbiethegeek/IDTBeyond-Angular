@@ -1,0 +1,22 @@
+<div class="jumbotron">
+  <h1>IDT Beyond</h1>
+  <p class="lead">
+    Stuff and things...
+  </p>
+
+</div>
+
+<div class="row marketing">
+  <div ng-show="vm.message">{{ vm.message }}</div>
+  <form name="settings">
+    <div class="form-control">
+      <input type="text" ng-model="vm.appId" name="app-id" />
+    </div>
+    <div class="form-control">
+      <input type="text" ng-model="vm.appKey" name="app-key" />
+    </div>
+    <div>
+      <button class="btn-primary pull-right" ng-click="vm.saveAppDetails()">Save App Details</button>
+    </div>
+  </form>
+</div>
