@@ -10,22 +10,38 @@
 angular.module('idtbeyondAngularDemoApp')
   .controller('MainCtrl', function (IdtBeyond) {
     var vm = this;
-    vm.name = "robbie";
-    vm.products = [];
+    vm.products = {};
     vm.appDetailsSet = IdtBeyond.credentialsSet();
+    vm.selectedCountry = '';
+    vm.selectedCarrierAmount = '';
+    vm.phoneNumber = '';
+    vm.allowValidation = function(){
+      return !(!!vm.phoneNumber && !!vm.selectedCarrierAmount && !!vm.selectedCountry);
+    }
+    vm.validateTopup = function(){
+      IdtBeyond.validateNumber(vm.phoneNumber, vm.selectedCountry)
+        .success(function(data){
+          console.log("success")
+          console.log(data)
+        })
+        .error(function(data, status){
+          console.log("error")
+          console.log(data)
+          console.log(status)
+        });
+    };
+
     if (vm.appDetailsSet){
       IdtBeyond.getProducts().then(function(products){
         vm.countries = {};
-          angular.forEach(products.data , function(product){
+        angular.forEach(products.data , function(product){
           vm.countries[product.countryCode] = product.country;
-          if (!vm.products[product.countryCode]){
-            vm.products[product.countryCode] = [];
+          var countryCode = product.countryCode;
+          if (!vm.products[countryCode]){
+            vm.products[countryCode] = [];
           }
-          vm.products[product.countryCode].push(product);
-
-          console.log(product);
+          vm.products[countryCode].push(product);
         })
-        console.log(vm.countries);
       });
     }
   });

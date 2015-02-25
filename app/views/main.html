@@ -5,7 +5,25 @@
   </p>
   <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
 </div>
-  {{ vm.products | json }}
 <div class="row marketing">
+  <span ng-show="vm.message">{{ vm.message }}</span>
+  <form name="vm.form.topup">
+    <div class="form-control">
+      <select ng-model="vm.selectedCountry" ng-options="k as v for (k, v) in vm.countries">
+      </select>
+    </div>
+    <div class="form-control">
+      <select ng-model="vm.selectedCarrierAmount" ng-options="product.carrierCode.concat('|', product.maxDenomination) as product.maxDenomination group by product.carrierCode for product in vm.products[vm.selectedCountry]"></select>
+      {{ vm.selectedCarrierAmount }}
+    </div>
+    <div class="form-control">
+      <input name='phoneNumber' ng-model="vm.phoneNumber" type="text" placeholder="Phone Number"/>
 
+    </div>
+    <div class="form-control">
+
+      {{ vm.allowValidation() }}
+      <button class="btn-primary pull-right" ng-click="vm.validateTopup()" ng-disabled="vm.allowValidation()">Validate</button>
+    </div>
+  </form>
 </div>

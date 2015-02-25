@@ -28,4 +28,18 @@ angular.module('idtbeyondAngularDemoApp')
     this.resetHeaders = function(){
       headers = setHeaders();
     }
+    this.validateNumber = function(phoneNumber, countryCode){
+      console.log(arguments)
+      var result = {
+          success: false,
+          message: '',
+          result: ''
+      };
+      return $http.get(
+        url.concat(
+          '/v1/iatu/number-validator?country_code', countryCode, '&mobile_number=', phoneNumber),
+        {
+          headers: headers
+        });
+    };
   });
