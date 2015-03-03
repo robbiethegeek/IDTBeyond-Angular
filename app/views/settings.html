@@ -15,6 +15,13 @@
     <div class="form-control">
       <input type="text" ng-model="vm.appKey" name="app-key" />
     </div>
+    <div class="form-control">
+      <input type="text" ng-model="vm.termId" name="term-id" />
+    </div>
+    <div class="form-control">
+      <label for="dev-mode"> Development Mode : </label>
+      <input name="dev-mode" type="checkbox" ng-model="vm.developmentMode" name="development-mode" />
+    </div>
     <div>
       <button class="btn-primary pull-right" ng-click="vm.saveAppDetails()">Save App Details</button>
     </div>

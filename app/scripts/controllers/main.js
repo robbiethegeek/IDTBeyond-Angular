@@ -11,37 +11,172 @@ angular.module('idtbeyondAngularDemoApp')
   .controller('MainCtrl', function (IdtBeyond) {
     var vm = this;
     vm.products = {};
+    var resetAllValues = function(){
+      vm.countries = {};
+      vm.selectedCountryCode = '';
+      vm.selectedCarrierCode = '';
+      vm.selectedAmount = '';
+      vm.phoneNumber = '';
+      vm.phoneNumberValid = false;
+      vm.phoneNumberValidated = false;
+      vm.topUpPrepared = false;
+      vm.localValueAmount = '';
+      vm.localValueCurrency = '';
+      vm.localValueResults = '';
+    };
+
+    vm.inDevMode = IdtBeyond.developmentMode();
+
     vm.appDetailsSet = IdtBeyond.credentialsSet();
-    vm.selectedCountry = '';
-    vm.selectedCarrierAmount = '';
-    vm.phoneNumber = '';
+
+    vm.productsSet = function(){
+      return !angular.equals({}, vm.products);
+    };
+
     vm.allowValidation = function(){
-      return !(!!vm.phoneNumber && !!vm.selectedCarrierAmount && !!vm.selectedCountry);
-    }
-    vm.validateTopup = function(){
-      IdtBeyond.validateNumber(vm.phoneNumber, vm.selectedCountry)
+      return !(!!vm.phoneNumber &&
+        !!vm.selectedCarrierCode &&
+        !!vm.selectedCountryCode &&
+        !!vm.selectedAmount);
+    };
+
+    vm.getLocalValue = function(){
+      if (!vm.selectedAmount && !vm.selectedCarrierCode && !vm.selectedCountryCode){
+        return false;
+      }
+      var currentProducts = vm.products[vm.selectedCountryCode][vm.selectedCarrierCode];
+
+      if (currentProducts.openRange){
+        angular.forEach(currentProducts, function(product){
+          if (product.minDenomination !== product.maxDenomination){
+            if (vm.selectedAmount < product.minDenomination || vm.selectedAmount > product.maxDenomination){
+              vm.message = 'Amount not within the acceptable range for this product. Minimum : '.concat(
+                product.minDenomination, ' Maximum: ', product.maxDenomination);
+              return;
+            }
+          }
+        });
+      }
+      IdtBeyond.getLocalValue({
+        carrierCode: vm.selectedCarrierCode,
+        countryCode: vm.selectedCountryCode,
+        amount: vm.selectedAmount,
+        currencyCode: 'USD'
+      }).success(function(results){
+        vm.localValueResults = results;
+        vm.localValueAmount = results.local_amount;
+        vm.localValueCurrency = results.local_currency;
+      }).error(function(err){
+        vm.localValueResults = {};
+        vm.message = err.error;
+        vm.localValueAmount = null;
+        vm.localValueCurrency = null;
+      });
+    };
+
+    vm.validatePhoneNumber = function(){
+      IdtBeyond.validateNumber(vm.phoneNumber, vm.selectedCountryCode)
         .success(function(data){
-          console.log("success")
-          console.log(data)
+          vm.phoneNumberValidated = true;
+          if (data.valid){
+            vm.phoneNumberValid = true;
+          } else {
+            vm.phoneNumberValid = false;
+          }
+          vm.validatePhoneResponse = data;
         })
-        .error(function(data, status){
-          console.log("error")
-          console.log(data)
-          console.log(status)
+        .error(function(err){
+          vm.message = err.error;
+          vm.phoneNumberValidated = true;
+          vm.validatePhoneResponse = {};
+          vm.phoneNumberValid = false;
         });
     };
 
+    vm.cancelTopup = function() {
+      vm.topUpPrepared = false;
+    };
+
+    vm.resetAllValues = function() {
+      resetAllValues();
+    };
+
+    vm.submitTopup = function() {
+      if (!vm.selectedAmount && !vm.selectedCarrierCode && !vm.selectedCountryCode && !vm.phoneNumber){
+        return false;
+      }
+      IdtBeyond.postTopup({
+        carrierCode: vm.selectedCarrierCode,
+        countryCode: vm.selectedCountryCode,
+        amount: vm.selectedAmount,
+        currencyCode: 'USD',
+        phoneNumber: vm.phoneNumber
+      }).success(function(results){
+        vm.message = 'Topup successfully submitted, client transaction id: '.concat(results.client_transaction_id, '.');
+        resetAllValues();
+      }).error(function(err){
+        console.log(err);
+        vm.topUpPrepared = false;
+        vm.message = 'Error occurred. '.concat(err.toString());
+      });
+    };
+
+    vm.prepareTopup = function(){
+      vm.message = '';
+      vm.topUpPrepared = true;
+      vm.prepareFailed = {
+        success: false,
+        message: ''
+      };
+      if (!vm.phoneNumberValidated){
+        vm.prepareFailed.success = true;
+        vm.prepareFailed.message = 'Please validate the phone number before preparing topup.';
+        return;
+      }
+      if (vm.phoneNumberValidated && !vm.phoneNumberValid){
+        vm.prepareFailed.success = true;
+        vm.prepareFailed.message = 'Please update phone number and re-validate.';
+        return;
+      }
+      if (!vm.localValueAmount || !vm.localValueCurrency) {
+        vm.getLocalValue();
+      }
+      return;
+    };
+
+    vm.clearMessage = function(){
+      vm.message = '';
+    };
+
+    resetAllValues();
+
     if (vm.appDetailsSet){
-      IdtBeyond.getProducts().then(function(products){
-        vm.countries = {};
-        angular.forEach(products.data , function(product){
+      IdtBeyond.getProducts().then(function(results){
+        var products = {};
+        angular.forEach(results.data , function(product){
           vm.countries[product.countryCode] = product.country;
           var countryCode = product.countryCode;
-          if (!vm.products[countryCode]){
-            vm.products[countryCode] = [];
+          var carrierCode = product.carrierCode;
+          if (!products[countryCode]){
+            products[countryCode] = {};
           }
-          vm.products[countryCode].push(product);
-        })
+          if (!products[countryCode][carrierCode]){
+            products[countryCode][carrierCode] = {
+              values: [],
+              openRange: false
+            };
+          }
+          if (product.maxDenomination !== product.minDenomination){
+            products[countryCode][carrierCode] = true;
+          } else {
+            products[countryCode][carrierCode].values.push({
+                minDenomination: product.minDenomination,
+                maxDenomination: product.maxDenomination
+              });
+          }
+        });
+        vm.products = products;
       });
     }
+
   });

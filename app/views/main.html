@@ -3,27 +3,85 @@
   <p class="lead">
     <span ng-hide="vm.appDetailsSet">Please setup your application details <a ng-href="#/settings">click here</a></span>
   </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
+</div>
+<div ng-show="vm.products && vm.inDevMode">
+  <div ng-repeat="(country, product) in vm.products">
+    <span>{{country}} {{ product | json }}</span>
+  </div>
 </div>
 <div class="row marketing">
-  <span ng-show="vm.message">{{ vm.message }}</span>
-  <form name="vm.form.topup">
+  <span ng-show="vm.productsSet() && vm.message">
+    {{ vm.message }}
+    <button ng-click="vm.clearMessage()">X</button></span>
+  <form name="vm.form.topup" ng-show="vm.productsSet()">
     <div class="form-control">
-      <select ng-model="vm.selectedCountry" ng-options="k as v for (k, v) in vm.countries">
+      Country: <select ng-model="vm.selectedCountryCode" ng-options="k as v for (k, v) in vm.countries">
       </select>
+      <span ng-if="vm.selectedCountryCode && vm.inDevMode">{{ vm.selectedCountryCode }}</span>
     </div>
     <div class="form-control">
-      <select ng-model="vm.selectedCarrierAmount" ng-options="product.carrierCode.concat('|', product.maxDenomination) as product.maxDenomination group by product.carrierCode for product in vm.products[vm.selectedCountry]"></select>
-      {{ vm.selectedCarrierAmount }}
+      Carrier: <select ng-model="vm.selectedCarrierCode" ng-options="k as k for (k, v) in vm.products[vm.selectedCountryCode]"></select>
+      <span ng-if="vm.selectedCarrierCode && vm.inDevMode">{{ vm.selectedCarrierCode }}</span>
     </div>
     <div class="form-control">
-      <input name='phoneNumber' ng-model="vm.phoneNumber" type="text" placeholder="Phone Number"/>
+      Topup Amount:
+      <select
+        ng-model="vm.selectedAmount"
+        ng-options="v.minDenomination for (k, v) in vm.products[vm.selectedCountryCode][vm.selectedCarrierCode].values">
+      </select>
+      <span ng-if="vm.products[vm.selectedCountryCode][vm.selectedCarrierCode].openRange">
+        Enter Amount : <input type="text" ng-model="vm.selectedAmount" />
+      </span>
+      <span ng-if="vm.selectedAmount && vm.inDevMode">{{ vm.selectedAmount }}</span>
+    </div>
+    <div>
+      <button ng-click="vm.getLocalValue()">Get Local Value</button>
+      <div ng-show="vm.localValueCurrency && vm.localValueAmount">
+        <p>{{ vm.localValueAmount }} {{ vm.localValueCurrency }}</p>
+        <span ng-if="vm.localValueCurrency && vm.localValueAmount && vm.inDevMode">
+          {{ vm.localValueResults | json }}
+        </span>
+      </div>
 
     </div>
-    <div class="form-control">
 
-      {{ vm.allowValidation() }}
-      <button class="btn-primary pull-right" ng-click="vm.validateTopup()" ng-disabled="vm.allowValidation()">Validate</button>
+    <div class="form-control">
+      Phone Number:<input name='phoneNumber' ng-model="vm.phoneNumber" type="text" placeholder="Phone Number"/>
+
+    </div>
+    <div ng-if="vm.phoneNumber">
+      <button ng-click="vm.validatePhoneNumber()">Validate Phone</button>
+      <div ng-show="vm.phoneNumberValidated">
+        <span ng-show="vm.phoneNumberValid">Phone Number Valid</span>
+        <span ng-hide="vm.phoneNumberValid">Phone Number Invalid</span>
+      </div>
+      <div ng-if="vm.inDevMode && vm.validatePhoneResponse">
+        {{ vm.validatePhoneResponse || json }}
+      </div>
+    </div>
+
+    <div class="form-control">
+      <button class="btn-primary pull-right" ng-click="vm.prepareTopup()" ng-disabled="vm.allowValidation()">
+        Prepare Topup
+      </button>
     </div>
   </form>
+  <div ng-if="vm.topUpPrepared">
+    <div ng-if="!vm.prepareFailed.success">
+      <span>Country : {{ vm.countries[vm.selectedCountryCode]}}</span>
+      <span>Carrier : {{ vm.selectedCarrierCode }}</span>
+      <span>Amount : {{ vm.selectedAmount }} | {{ vm.localValueAmount }} {{ vm.localValueCurrency }}</span>
+      <span>Phone Number: {{ vm.phoneNumber }}</span>
+      <p>
+        <button ng-click="vm.resetAllValues()">Reset</button>
+        <button ng-click="vm.cancelTopup()">Cancel</button>
+        <button ng-click="vm.submitTopup()">Submit Topup</button>
+      </p>
+    </div>
+    <div ng-if="vm.prepareFailed.success">
+      <span>Failure to prepare the TopUp.</span>
+      <span>Error : {{ vm.prepareFailed.message }}</span>
+    </div>
+  </div>
+
 </div>

@@ -12,27 +12,38 @@ angular.module('idtbeyondAngularDemoApp')
     var vm = this;
     vm.appId = localStorageService.get('appId');
     vm.appKey = localStorageService.get('appKey');
+    vm.developmentMode = (localStorageService.get('developmentMode')) ? true : false;
+
     var resetDataAndMessage = function(message){
       vm.message = message;
       vm.appId = '';
       vm.appKey = '';
-    }
+      vm.termId = '';
+    };
+
     vm.saveAppDetails = function(){
-      console.log(settings)
-      if(!vm.appId || !vm.appKey){
+      if(!vm.appId || !vm.appKey || !vm.TermId){
         resetDataAndMessage('App ID & App Key must both be filled in. Re-enter application details.');
         return;
       }
       if (!localStorageService.set('appId', vm.appId)){
-        resetDataAndMessage("Saving Application ID failed, please try again.");
-        return
-      }
-      if (!localStorageService.set('appKey', vm.appKey)){
-        resetDataAndMessage("Saving Application Key failed, please try again.");
+        resetDataAndMessage('Saving Application ID failed, please try again.');
         return;
       }
-      vm.message = "saved!";
-      IdtBeyond.resetHeaders();
-    }
-    console.log(settings)
+      if (!localStorageService.set('appKey', vm.appKey)){
+        resetDataAndMessage('Saving Application Key failed, please try again.');
+        return;
+      }
+      if (!localStorageService.set('termId', vm.termId)){
+        resetDataAndMessage('Saving Terminal ID failed, please try again.');
+        return;
+      }
+      var devModeForLocalStorage = (vm.developmentMode) ? 1 : 0;
+      if (!localStorageService.set('developmentMode', devModeForLocalStorage)){
+        resetDataAndMessage('Saving Application Key failed, please try again.');
+        return;
+      }
+      vm.message = 'saved!';
+      IdtBeyond.resetAppData();
+    };
   });
