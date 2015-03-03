@@ -27,7 +27,7 @@
       Topup Amount:
       <select
         ng-model="vm.selectedAmount"
-        ng-options="v.minDenomination for (k, v) in vm.products[vm.selectedCountryCode][vm.selectedCarrierCode].values">
+        ng-options="v.minDenomination as v.minDenomination  for (k, v) in vm.products[vm.selectedCountryCode][vm.selectedCarrierCode].values">
       </select>
       <span ng-if="vm.products[vm.selectedCountryCode][vm.selectedCarrierCode].openRange">
         Enter Amount : <input type="text" ng-model="vm.selectedAmount" />
