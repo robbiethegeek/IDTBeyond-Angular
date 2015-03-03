@@ -2,7 +2,6 @@
 
 describe('Controller: SettingsCtrl', function () {
 
-  // load the controller's module
   beforeEach(module('idtbeyondAngularDemoApp'));
 
   var SettingsCtrl, IdtBeyond, scope, localStorageService;
