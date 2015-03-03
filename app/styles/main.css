@@ -58,6 +58,11 @@ body {
 .marketing p + h4 {
   margin-top: 28px;
 }
+.developer-mode {
+  padding: 5px 5px 5px 5px;
+  background: #c4c4c4;
+  color: #000000;
+}
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
