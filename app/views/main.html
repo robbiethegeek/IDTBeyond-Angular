@@ -14,23 +14,24 @@
     {{ vm.message }}
     <button ng-click="vm.clearMessage()">X</button></span>
   <form name="vm.form.topup" ng-show="vm.productsSet()">
-    <div class="form-control">
+    <div class="form-group">
+
       Country: <select ng-model="vm.selectedCountryCode" ng-options="k as v for (k, v) in vm.countries">
       </select>
       <span ng-if="vm.selectedCountryCode && vm.inDevMode">{{ vm.selectedCountryCode }}</span>
     </div>
-    <div class="form-control">
+    <div class="form-group">
       Carrier: <select ng-model="vm.selectedCarrierCode" ng-options="k as k for (k, v) in vm.products[vm.selectedCountryCode]"></select>
       <span ng-if="vm.selectedCarrierCode && vm.inDevMode">{{ vm.selectedCarrierCode }}</span>
     </div>
-    <div class="form-control">
+    <div class="form-group">
       Topup Amount:
       <select
         ng-model="vm.selectedAmount"
         ng-options="v.minDenomination as v.minDenomination  for (k, v) in vm.products[vm.selectedCountryCode][vm.selectedCarrierCode].values">
       </select>
       <span ng-if="vm.products[vm.selectedCountryCode][vm.selectedCarrierCode].openRange">
-        Enter Amount : <input type="text" ng-model="vm.selectedAmount" />
+        Enter Amount : <input type="text" ng-model="vm.selectedAmount" class="form-control" />
       </span>
       <span ng-if="vm.selectedAmount && vm.inDevMode">{{ vm.selectedAmount }}</span>
     </div>
@@ -45,8 +46,8 @@
 
     </div>
 
-    <div class="form-control">
-      Phone Number:<input name='phoneNumber' ng-model="vm.phoneNumber" type="text" placeholder="Phone Number"/>
+    <div class="form-group">
+      Phone Number:<input name='phoneNumber' class="form-control" ng-model="vm.phoneNumber" type="text" placeholder="Phone Number"/>
 
     </div>
     <div ng-if="vm.phoneNumber">
@@ -60,11 +61,9 @@
       </div>
     </div>
 
-    <div class="form-control">
       <button class="btn-primary pull-right" ng-click="vm.prepareTopup()" ng-disabled="vm.allowValidation()">
         Prepare Topup
       </button>
-    </div>
   </form>
   <div ng-if="vm.topUpPrepared">
     <div ng-if="!vm.prepareFailed.success">
