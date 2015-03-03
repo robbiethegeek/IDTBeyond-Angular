@@ -1,7 +1,7 @@
 <div class="jumbotron">
-  <h1>IDT Beyond</h1>
+  <h1>IATU Demo</h1>
   <p class="lead">
-    Stuff and things...
+    This is an example Angular IATU topup application using IDT Beyond's API.
   </p>
 
 </div>
@@ -9,16 +9,16 @@
 <div class="row marketing">
   <div ng-show="vm.message">{{ vm.message }}</div>
   <form name="settings">
-    <div class="form-control">
-      <input type="text" ng-model="vm.appId" name="app-id" />
+    <div class="form-group">
+      <input type="text" class="form-control" ng-model="vm.appId" name="app-id" placeholder="Enter the APP-ID (ex: q1w2e3r4)" />
     </div>
-    <div class="form-control">
-      <input type="text" ng-model="vm.appKey" name="app-key" />
+    <div class="form-group">
+      <input type="text" class="form-control" ng-model="vm.appKey" name="app-key" placeholder="Enter the APP-KEY (ex: 1234567qwerty098765asdfg)" />
     </div>
-    <div class="form-control">
-      <input type="text" ng-model="vm.termId" name="term-id" />
+    <div class="form-group">
+      <input type="text" class="form-control" ng-model="vm.termId" name="term-id" placeholder="Enter the TERMINAL-ID (ex: kiosk 1)" />
     </div>
-    <div class="form-control">
+    <div class="form-group">
       <label for="dev-mode"> Development Mode : </label>
       <input name="dev-mode" type="checkbox" ng-model="vm.developmentMode" name="development-mode" />
     </div>
