@@ -8,10 +8,12 @@ describe('Service: IdtBeyond', function () {
   // instantiate service
   var IdtBeyond;
   beforeEach(inject(function (_IdtBeyond_) {
+    console.log(_IdtBeyond_)
     IdtBeyond = _IdtBeyond_;
   }));
 
   it('should do something', function () {
+    dump(IdtBeyond)
     expect(!!IdtBeyond).toBe(true);
   });
 

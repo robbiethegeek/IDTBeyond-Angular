@@ -13,17 +13,20 @@ angular.module('idtbeyondAngularDemoApp')
     vm.appId = localStorageService.get('appId');
     vm.appKey = localStorageService.get('appKey');
     vm.developmentMode = (localStorageService.get('developmentMode')) ? true : false;
+    vm.termId = localStorageService.get('termId');
+    vm.message = '';
 
     var resetDataAndMessage = function(message){
       vm.message = message;
       vm.appId = '';
       vm.appKey = '';
       vm.termId = '';
+      vm.developmentMode = null;
     };
 
     vm.saveAppDetails = function(){
-      if(!vm.appId || !vm.appKey || !vm.TermId){
-        resetDataAndMessage('App ID & App Key must both be filled in. Re-enter application details.');
+      if(!vm.appId || !vm.appKey || !vm.termId){
+        resetDataAndMessage('App ID, App Key & Term ID must both be filled in. Re-enter application details.');
         return;
       }
       if (!localStorageService.set('appId', vm.appId)){
