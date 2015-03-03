@@ -16,7 +16,7 @@ angular.module('idtbeyondAngularDemoApp')
       };
     };
 
-    var url = 'https://api-dev.idtbeyond.com';
+    var url = 'https://api.idtbeyond.com';
     var headers = setHeaders();
     var termId = (localStorageService.get('termId')) ? localStorageService.get('termId') : '';
 
