@@ -167,13 +167,12 @@ angular.module('idtbeyondAngularDemoApp')
             };
           }
           if (product.maxDenomination !== product.minDenomination){
-            products[countryCode][carrierCode] = true;
-          } else {
-            products[countryCode][carrierCode].values.push({
-                minDenomination: product.minDenomination,
-                maxDenomination: product.maxDenomination
-              });
+            products[countryCode][carrierCode].openRange = true;
           }
+          products[countryCode][carrierCode].values.push({
+              minDenomination: product.minDenomination,
+              maxDenomination: product.maxDenomination
+          });
         });
         vm.products = products;
       });
