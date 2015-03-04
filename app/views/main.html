@@ -22,7 +22,7 @@
       <div>
         <label class="control-label">Country:</label>
       </div>
-        <select ng-model="vm.selectedCountryCode" ng-options="k as v for (k, v) in vm.countries">
+        <select class="form-control" ng-model="vm.selectedCountryCode" ng-options="k as v for (k, v) in vm.countries">
       </select>
     </div><!-- country -->
 
@@ -30,14 +30,14 @@
       <div>
         <label class="control-label">Carrier:</label>
       </div>
-        <select ng-model="vm.selectedCarrierCode" ng-options="k as k for (k, v) in vm.products[vm.selectedCountryCode]"></select>
+        <select class="form-control" ng-model="vm.selectedCarrierCode" ng-options="k as k for (k, v) in vm.products[vm.selectedCountryCode]"></select>
     </div><!-- carrier -->
 
     <div class="form-group col-md-12 col-sm-12">
       <div>
         <label class="control-label">Topup Amount:</label>
       </div>
-        <select ng-model="vm.selectedAmount" ng-options="v.minDenomination as v.minDenomination  for (k, v) in vm.products[vm.selectedCountryCode][vm.selectedCarrierCode].values"></select>
+        <select class="form-control" ng-model="vm.selectedAmount" ng-options="v.minDenomination as v.minDenomination  for (k, v) in vm.products[vm.selectedCountryCode][vm.selectedCarrierCode].values"></select>
       </div><!-- amount -->
 
     <div class="form-group col-md-12 col-sm-12">
