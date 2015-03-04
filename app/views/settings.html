@@ -7,11 +7,11 @@
 </div>
 
 <div class="row marketing">
-  <div>
-    <span class="alert" ng-class="{'alert-danger': vm.alertDanger, 'alert-success': vm.alertSuccess, 'alert-info': vm.alertInfo}">
+  <div ng-show="vm.message">
+    <p class="alert" ng-class="{'alert-danger': vm.alertDanger, 'alert-success': vm.alertSuccess, 'alert-info': vm.alertInfo}">
     {{ vm.message }}
-    <button ng-click="vm.clearMessage()">X</button>
-    </span>
+    <button class="pull-right" ng-click="vm.clearMessage()">X</button>
+    </p>
   </div>
   <form name="settings">
     <div class="form-group">
