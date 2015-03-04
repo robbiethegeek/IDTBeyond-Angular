@@ -26,7 +26,7 @@ angular.module('idtbeyondAngularDemoApp')
 
     vm.clearApplicationData = function(){
       localStorageService.clearAll();
-      resetDataAndMessage("Application Data cleared.");
+      resetDataAndMessage('Application Data cleared.');
     };
 
     vm.saveAppDetails = function(){
