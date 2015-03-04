@@ -63,7 +63,7 @@ describe('Controller: SettingsCtrl', function () {
     expect(scope.vm.message).toBe('');
     scope.vm.termId = null;
     scope.vm.saveAppDetails();
-    expect(scope.vm.message).toBe('App ID, App Key & Term ID must both be filled in. Re-enter application details.');
+    expect(scope.vm.message).toBe('App ID, App Key & Term ID must all be filled in. Re-enter application details.');
     expect(scope.vm.appId).toEqual('');
     expect(scope.vm.appKey).toEqual('');
     expect(scope.vm.termId).toEqual('');
@@ -77,7 +77,7 @@ describe('Controller: SettingsCtrl', function () {
 
     expect(scope.vm.message).toBe('');
     scope.vm.saveAppDetails();
-    expect(scope.vm.message).toBe('saved!');
+    expect(scope.vm.message).toBe('Settings successfully saved.');
     expect(IdtBeyond.resetAppData).toHaveBeenCalled();
   });
 });

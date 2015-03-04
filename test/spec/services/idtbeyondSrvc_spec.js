@@ -39,13 +39,13 @@ describe('Service: IdtBeyond', function () {
     expect(IdtBeyond.credentialsSet()).toBe(true);
   });
 
-  it('should /v1/iatu/products/reports/all when getProducts is called.', function(){
+  it('should call /v1/iatu/products/reports/all when getProducts is called.', function(){
     $httpBackend.expectGET('https://api.idtbeyond.com/v1/iatu/products/reports/all', verifyHeaders).respond(deferred);
     IdtBeyond.getProducts();
     $httpBackend.flush();
   });
 
-  it('should /v1/iatu/number-validator when validateNumber is called with the correct params.', function(){
+  it('should call /v1/iatu/number-validator when validateNumber is called.', function(){
     var phoneNumber = 'phone-number';
     var countryCode = 'country-code';
     $httpBackend.expectGET('https://api.idtbeyond.com/v1/iatu/number-validator?country_code='.concat(
@@ -54,30 +54,41 @@ describe('Service: IdtBeyond', function () {
     $httpBackend.flush();
   });
 
-  //it.only('should //v1/iatu/topups when postTopup is called with the correct params.', function(){
-  //  var phoneNumber = 'phone-number';
-  //  var countryCode = 'country-code';
-  //  var params = {
-  //    countryCode: 'country-code',
-  //    phoneNumber: 'phone-number',
-  //    carrierCode: 'carrier-code',
-  //    amount: 'amount'
-  //  }
-  //  var clientRegex = new RegExp('appId-\\d+');
-  //  $httpBackend.expectPOST('/v1/iatu/topups',jasmine.objectContaining(
-  //    'country_code': params.countryCode,
-  //    'carrier_code': params.carrierCode,
-  //    'mobile_number': params.phoneNumber,
-  //    'plan':'Sandbox',
-  //    'amount': params.amount,
-  //    'terminal_id': 'termId'
-  //  ),
-  //    function(headers){
-  //      return (headers['x-idt-beyond-app-id'] === expectedHeaders['x-idt-beyond-app-id']) &&
-  //        headers['x-idt-beyond-app-key'] === expectedHeaders['x-idt-beyond-app-key']
-  //    }).respond(deferred);
-  //  IdtBeyond.postTopup(params);
-  //  $httpBackend.flush();
-  //});
+  it('should call /v1/iatu/products/reports/local-value when getLocalValue is called.', function(){
+    var params = {
+      amount: 'amount',
+      countryCode: 'country-code',
+      carrierCode: 'carrier-code',
+      currencyCode: 'currency-code'
+    };
 
+    $httpBackend.expectGET('https://api.idtbeyond.com/v1/iatu/products/reports/local-value?carrier_code='.concat(
+      params.carrierCode, '&country_code=', params.countryCode, '&amount=', params.amount, '&currency_code=',
+      params.currencyCode), verifyHeaders).respond(deferred);
+    IdtBeyond.getLocalValue(params);
+    $httpBackend.flush();
+  });
+
+  it('should call /v1/iatu/topups when postTopup is called with the correct params.', function(){
+    var params = {
+      countryCode: 'country-code',
+      phoneNumber: 'phone-number',
+      carrierCode: 'carrier-code',
+      amount: 'amount'
+    };
+
+    $httpBackend.expectPOST('https://api.idtbeyond.com/v1/iatu/topups', function(postData){
+      var data = angular.fromJson(postData);
+      /* jshint ignore:start */
+      expect(data.country_code).toEqual(params.countryCode);
+      expect(data.mobile_number).toEqual(params.phoneNumber);
+      expect(data.carrier_code).toEqual(params.carrierCode);
+      expect(data.client_transaction_id).toContain('appId');
+      /* jshint ignore:end */
+      expect(data.amount).toEqual(params.amount);
+      return true;
+    }, verifyHeaders).respond(deferred);
+    IdtBeyond.postTopup(params);
+    $httpBackend.flush();
+  });
 });

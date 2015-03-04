@@ -10,7 +10,7 @@
 angular.module('idtbeyondAngularDemoApp')
   .controller('MainCtrl', function (IdtBeyond) {
     var vm = this;
-    
+
     var setAlertLevel = function(level){
 		switch (level){
 			case 'danger':
@@ -43,9 +43,9 @@ angular.module('idtbeyondAngularDemoApp')
 				vm.alertInfo = false;
 				vm.alertWarning = false;
 				return;
-		}	
+		}
 	};
-	
+
     vm.products = {};
     var resetAllValues = function(){
       vm.countries = {};
@@ -100,9 +100,11 @@ angular.module('idtbeyondAngularDemoApp')
         amount: vm.selectedAmount,
         currencyCode: 'USD'
       }).success(function(results){
-        vm.localValueResults = results;
+        /* jshint ignore:start */
         vm.localValueAmount = results.local_amount;
         vm.localValueCurrency = results.local_currency;
+        /* jshint ignore:end */
+        vm.localValueResults = results;
         vm.message = 'Estimated local value:'.concat(vm.localValueAmount,' ', vm.localValueCurrency);
         setAlertLevel('info');
       }).error(function(err){
@@ -157,7 +159,8 @@ angular.module('idtbeyondAngularDemoApp')
         currencyCode: 'USD',
         phoneNumber: vm.phoneNumber
       }).success(function(results){
-        vm.message = 'Topup successfully submitted, client transaction id: '.concat(results.client_transaction_id, '.');
+        vm.message = 'Topup successfully submitted, client transaction id: '.
+          concat(results.client_transaction_id, '.'); // jshint ignore:line
         setAlertLevel('success');
         resetAllValues();
       }).error(function(err){
@@ -170,7 +173,7 @@ angular.module('idtbeyondAngularDemoApp')
     vm.prepareTopup = function(){
       vm.message = '';
       vm.topUpPrepared = true;
-      
+
       if (!vm.phoneNumberValidated){
         vm.message = 'Please validate the phone number before preparing topup.';
         setAlertLevel('danger');
@@ -222,9 +225,9 @@ angular.module('idtbeyondAngularDemoApp')
     }
 		vm.resetCarrierValues = function(all){
 			if (all){
-				vm.selectedCarrierCode = '';	
+				vm.selectedCarrierCode = '';
 			}
 			vm.selectedAmount = '';
 		};
-		
+
   });
