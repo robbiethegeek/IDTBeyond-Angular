@@ -32,7 +32,8 @@ describe('Controller: SettingsCtrl', function () {
     };
     IdtBeyond = {
       resetAppData: jasmine.createSpy()
-    }
+    };
+
     scope = {};
     SettingsCtrl = $controller('SettingsCtrl as vm', {
       IdtBeyond: IdtBeyond,
@@ -70,9 +71,10 @@ describe('Controller: SettingsCtrl', function () {
   });
 
   it('should set the message to success when it saves properly', function () {
-    localStorageService.set = function(value){
+    localStorageService.set = function(){
       return true;
-    }
+    };
+
     expect(scope.vm.message).toBe('');
     scope.vm.saveAppDetails();
     expect(scope.vm.message).toBe('saved!');

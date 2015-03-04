@@ -9,8 +9,12 @@ describe('Service: IdtBeyond', function () {
     'x-idt-beyond-app-id': 'appId',
     'x-idt-beyond-app-key': 'appKey'
   };
-  var successCallback = jasmine.createSpy('success');
-  var errorCallback = jasmine.createSpy('error');
+
+  var verifyHeaders = function(headers){
+    return (headers['x-idt-beyond-app-id'] === expectedHeaders['x-idt-beyond-app-id']) &&
+      headers['x-idt-beyond-app-key'] === expectedHeaders['x-idt-beyond-app-key'];
+  };
+
   beforeEach(module(function($provide) {
     localStorageService = {
       get: function(value){
@@ -36,11 +40,7 @@ describe('Service: IdtBeyond', function () {
   });
 
   it('should /v1/iatu/products/reports/all when getProducts is called.', function(){
-    $httpBackend.expectGET('https://api.idtbeyond.com/v1/iatu/products/reports/all',
-    function(headers){
-      return (headers['x-idt-beyond-app-id'] === expectedHeaders['x-idt-beyond-app-id']) &&
-        headers['x-idt-beyond-app-key'] === expectedHeaders['x-idt-beyond-app-key']
-    }).respond(deferred);
+    $httpBackend.expectGET('https://api.idtbeyond.com/v1/iatu/products/reports/all', verifyHeaders).respond(deferred);
     IdtBeyond.getProducts();
     $httpBackend.flush();
   });
@@ -49,16 +49,12 @@ describe('Service: IdtBeyond', function () {
     var phoneNumber = 'phone-number';
     var countryCode = 'country-code';
     $httpBackend.expectGET('https://api.idtbeyond.com/v1/iatu/number-validator?country_code='.concat(
-      countryCode, '&mobile_number=', phoneNumber),
-      function(headers){
-        return (headers['x-idt-beyond-app-id'] === expectedHeaders['x-idt-beyond-app-id']) &&
-          headers['x-idt-beyond-app-key'] === expectedHeaders['x-idt-beyond-app-key']
-      }).respond(deferred);
+      countryCode, '&mobile_number=', phoneNumber), verifyHeaders).respond(deferred);
     IdtBeyond.validateNumber(phoneNumber, countryCode);
     $httpBackend.flush();
   });
 
-  //it('should //v1/iatu/topups when postTopup is called with the correct params.', function(){
+  //it.only('should //v1/iatu/topups when postTopup is called with the correct params.', function(){
   //  var phoneNumber = 'phone-number';
   //  var countryCode = 'country-code';
   //  var params = {
