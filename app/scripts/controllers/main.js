@@ -10,6 +10,42 @@
 angular.module('idtbeyondAngularDemoApp')
   .controller('MainCtrl', function (IdtBeyond) {
     var vm = this;
+    
+    var setAlertLevel = function(level){
+		switch (level){
+			case 'danger':
+				vm.alertDanger = true;
+				vm.alertSuccess = false;
+				vm.alertInfo = false;
+				vm.alertWarning = false;
+				return;
+			case 'info':
+				vm.alertInfo = true;
+				vm.alertSuccess = false;
+				vm.alertDanger = false;
+				vm.alertWarning = false;
+				return;
+			case 'success':
+				vm.alertSuccess = true;
+				vm.alertDanger = false;
+				vm.alertInfo = false;
+				vm.alertWarning = false;
+				return;
+			case 'warning':
+				vm.alertWarning = true;
+				vm.alertSuccess = false;
+				vm.alertDanger = false;
+				vm.alertInfo = false;
+				return;
+			default:
+				vm.alertSuccess = false;
+				vm.alertDanger = false;
+				vm.alertInfo = false;
+				vm.alertWarning = false;
+				return;
+		}	
+	};
+	
     vm.products = {};
     var resetAllValues = function(){
       vm.countries = {};
@@ -52,7 +88,7 @@ angular.module('idtbeyondAngularDemoApp')
             if (vm.selectedAmount < product.minDenomination || vm.selectedAmount > product.maxDenomination){
               vm.message = 'Amount not within the acceptable range for this product. Minimum : '.concat(
                 product.minDenomination, ' Maximum: ', product.maxDenomination);
-              vm.alertDanger = true;
+              setAlertLevel('danger');
               return;
             }
           }
@@ -68,7 +104,7 @@ angular.module('idtbeyondAngularDemoApp')
         vm.localValueAmount = results.local_amount;
         vm.localValueCurrency = results.local_currency;
         vm.message = 'Estimated local value:'.concat(vm.localValueAmount,' ', vm.localValueCurrency);
-        vm.alertInfo = true;
+        setAlertLevel('info');
       }).error(function(err){
         vm.localValueResults = {};
         vm.message = err.error;
@@ -83,15 +119,19 @@ angular.module('idtbeyondAngularDemoApp')
         .success(function(data){
           vm.phoneNumberValidated = true;
           if (data.valid){
+            vm.message = 'Phone number is valid.';
+            setAlertLevel('info');
             vm.phoneNumberValid = true;
           } else {
-            vm.phoneNumberValid = false;
+            setAlertLevel('warning');
+            vm.message = 'Phone number is not valid. Please check and try again.';
+            vm.phoneNumber = '';
           }
           vm.validatePhoneResponse = data;
         })
         .error(function(err){
+          setAlertLevel('danger');
           vm.message = err.error;
-          vm.alertDanger = true;
           vm.phoneNumberValidated = true;
           vm.validatePhoneResponse = {};
           vm.phoneNumberValid = false;
@@ -118,44 +158,35 @@ angular.module('idtbeyondAngularDemoApp')
         phoneNumber: vm.phoneNumber
       }).success(function(results){
         vm.message = 'Topup successfully submitted, client transaction id: '.concat(results.client_transaction_id, '.');
-        vm.alertSuccess = true;
+        setAlertLevel('success');
         resetAllValues();
       }).error(function(err){
-        console.log(err);
         vm.topUpPrepared = false;
-        vm.message = 'Error occurred. '.concat(err.toString());
-        vm.alertDanger = true;
+        vm.message = 'Error: '.concat(err.error);
+        setAlertLevel('danger');
       });
     };
 
     vm.prepareTopup = function(){
       vm.message = '';
       vm.topUpPrepared = true;
-      vm.prepareFailed = {
-        success: false,
-        message: ''
-      };
+      
       if (!vm.phoneNumberValidated){
         vm.message = 'Please validate the phone number before preparing topup.';
-        vm.alertDanger = true;
+        setAlertLevel('danger');
         return;
       }
       if (vm.phoneNumberValidated && !vm.phoneNumberValid){
         vm.message = 'Please update phone number and re-validate.';
-        vm.alertDanger = true;
+        setAlertLevel('danger');
         return;
-      }
-      if (!vm.localValueAmount || !vm.localValueCurrency) {
-        vm.getLocalValue();
       }
       return;
     };
 
     vm.clearMessage = function(){
       vm.message = '';
-      vm.alertDanger = false;
-      vm.alertSuccess = false;
-      vm.alertInfo = false;
+      setAlertLevel();
     };
 
     resetAllValues();
@@ -178,6 +209,8 @@ angular.module('idtbeyondAngularDemoApp')
           }
           if (product.maxDenomination !== product.minDenomination){
             products[countryCode][carrierCode].openRange = true;
+            products[countryCode][carrierCode].minDenomination = product.minDenomination;
+            products[countryCode][carrierCode].maxDenomination = product.maxDenomination;
           }
           products[countryCode][carrierCode].values.push({
               minDenomination: product.minDenomination,
@@ -187,5 +220,11 @@ angular.module('idtbeyondAngularDemoApp')
         vm.products = products;
       });
     }
-
+		vm.resetCarrierValues = function(all){
+			if (all){
+				vm.selectedCarrierCode = '';	
+			}
+			vm.selectedAmount = '';
+		};
+		
   });
