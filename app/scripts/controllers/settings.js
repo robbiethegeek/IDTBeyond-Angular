@@ -25,13 +25,13 @@ angular.module('idtbeyondAngularDemoApp')
       switch (alertType){
         case 'danger':
           vm.alertDanger = true;
-          return
+          return;
         case 'info':
           vm.alertInfo = true;
           return;
         case 'success':
           vm.alertSuccess = true;
-      };
+      }
     };
 
     vm.clearMessage = function(){
@@ -68,7 +68,7 @@ angular.module('idtbeyondAngularDemoApp')
         resetDataAndMessage('Saving Application Key failed, please try again.');
         return;
       }
-      vm.message = "Settings successfully saved.";
+      vm.message = 'Settings successfully saved.';
       vm.alertSuccess = true;
 
       IdtBeyond.resetAppData();
