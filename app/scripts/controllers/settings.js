@@ -16,12 +16,29 @@ angular.module('idtbeyondAngularDemoApp')
     vm.termId = localStorageService.get('termId');
     vm.message = '';
 
-    var resetDataAndMessage = function(message){
+    var resetDataAndMessage = function(message, alertType){
       vm.message = message;
       vm.appId = '';
       vm.appKey = '';
       vm.termId = '';
       vm.developmentMode = null;
+      switch (alertType){
+        case 'danger':
+          vm.alertDanger = true;
+          return
+        case 'info':
+          vm.alertInfo = true;
+          return;
+        case 'success':
+          vm.alertSuccess = true;
+      };
+    };
+
+    vm.clearMessage = function(){
+      vm.message = '';
+      vm.alertDanger = false;
+      vm.alertSuccess = false;
+      vm.alertInfo = false;
     };
 
     vm.clearApplicationData = function(){
@@ -51,7 +68,9 @@ angular.module('idtbeyondAngularDemoApp')
         resetDataAndMessage('Saving Application Key failed, please try again.');
         return;
       }
-      vm.message = 'saved!';
+      vm.message = "Settings successfully saved.";
+      vm.alertSuccess = true;
+
       IdtBeyond.resetAppData();
     };
   });

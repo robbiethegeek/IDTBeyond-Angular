@@ -7,7 +7,12 @@
 </div>
 
 <div class="row marketing">
-  <div ng-show="vm.message">{{ vm.message }}</div>
+  <div>
+    <span class="alert" ng-class="{'alert-danger': vm.alertDanger, 'alert-success': vm.alertSuccess, 'alert-info': vm.alertInfo}">
+    {{ vm.message }}
+    <button ng-click="vm.clearMessage()">X</button>
+    </span>
+  </div>
   <form name="settings">
     <div class="form-group">
       <input type="text" class="form-control" ng-model="vm.appId" name="app-id" placeholder="Enter the APP-ID (ex: q1w2e3r4)" />
