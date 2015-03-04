@@ -24,6 +24,11 @@ angular.module('idtbeyondAngularDemoApp')
       vm.developmentMode = null;
     };
 
+    vm.clearApplicationData = function(){
+      localStorageService.clearAll();
+      resetDataAndMessage("Application Data cleared.");
+    };
+
     vm.saveAppDetails = function(){
       if(!vm.appId || !vm.appKey || !vm.termId){
         resetDataAndMessage('App ID, App Key & Term ID must both be filled in. Re-enter application details.');

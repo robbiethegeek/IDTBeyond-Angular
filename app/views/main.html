@@ -9,7 +9,7 @@
 <div class="row marketing">
 
   <!-- Message area -->
-  <span ng-show="vm.productsSet() && vm.message">
+  <span class="alert" ng-class="{'alert-danger': vm.alertDanger, 'alert-success': vm.alertSuccess, 'alert-info': vm.alertInfo}" alert-danger" ng-show="vm.productsSet() && vm.message">
     {{ vm.message }}
     <button ng-click="vm.clearMessage()">X</button>
   </span>
@@ -51,11 +51,6 @@
         <div class="col-md-6 col-sm-6 col-xs-12">
           <button type="button" class="btn btn-info btn-md" ng-click="vm.getLocalValue()">
             <span class="glyphicon glyphicon-globe" aria-hidden="true"></span> Get Local Value</button>
-        </div>
-        <div class="col-md-6 col-sm-6 col-xs-12">
-          <div ng-show="vm.localValueCurrency && vm.localValueAmount">
-          Estimated local value: <strong>{{ vm.localValueAmount }} {{ vm.localValueCurrency }}</strong>
-          </div>
         </div>
     </div><!-- local value -->
 

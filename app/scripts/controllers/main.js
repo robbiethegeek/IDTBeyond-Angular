@@ -52,6 +52,7 @@ angular.module('idtbeyondAngularDemoApp')
             if (vm.selectedAmount < product.minDenomination || vm.selectedAmount > product.maxDenomination){
               vm.message = 'Amount not within the acceptable range for this product. Minimum : '.concat(
                 product.minDenomination, ' Maximum: ', product.maxDenomination);
+              vm.alertDanger = true;
               return;
             }
           }
@@ -66,9 +67,12 @@ angular.module('idtbeyondAngularDemoApp')
         vm.localValueResults = results;
         vm.localValueAmount = results.local_amount;
         vm.localValueCurrency = results.local_currency;
+        vm.message = 'Estimated local value:'.concat(vm.localValueAmount,' ', vm.localValueCurrency);
+        vm.alertInfo = true;
       }).error(function(err){
         vm.localValueResults = {};
         vm.message = err.error;
+        vm.alertDanger = true;
         vm.localValueAmount = null;
         vm.localValueCurrency = null;
       });
@@ -87,6 +91,7 @@ angular.module('idtbeyondAngularDemoApp')
         })
         .error(function(err){
           vm.message = err.error;
+          vm.alertDanger = true;
           vm.phoneNumberValidated = true;
           vm.validatePhoneResponse = {};
           vm.phoneNumberValid = false;
@@ -113,11 +118,13 @@ angular.module('idtbeyondAngularDemoApp')
         phoneNumber: vm.phoneNumber
       }).success(function(results){
         vm.message = 'Topup successfully submitted, client transaction id: '.concat(results.client_transaction_id, '.');
+        vm.alertSuccess = true;
         resetAllValues();
       }).error(function(err){
         console.log(err);
         vm.topUpPrepared = false;
         vm.message = 'Error occurred. '.concat(err.toString());
+        vm.alertDanger = true;
       });
     };
 
@@ -129,13 +136,13 @@ angular.module('idtbeyondAngularDemoApp')
         message: ''
       };
       if (!vm.phoneNumberValidated){
-        vm.prepareFailed.success = true;
-        vm.prepareFailed.message = 'Please validate the phone number before preparing topup.';
+        vm.message = 'Please validate the phone number before preparing topup.';
+        vm.alertDanger = true;
         return;
       }
       if (vm.phoneNumberValidated && !vm.phoneNumberValid){
-        vm.prepareFailed.success = true;
-        vm.prepareFailed.message = 'Please update phone number and re-validate.';
+        vm.message = 'Please update phone number and re-validate.';
+        vm.alertDanger = true;
         return;
       }
       if (!vm.localValueAmount || !vm.localValueCurrency) {
@@ -146,6 +153,9 @@ angular.module('idtbeyondAngularDemoApp')
 
     vm.clearMessage = function(){
       vm.message = '';
+      vm.alertDanger = false;
+      vm.alertSuccess = false;
+      vm.alertInfo = false;
     };
 
     resetAllValues();
