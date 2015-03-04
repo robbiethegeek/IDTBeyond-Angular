@@ -44,11 +44,13 @@ angular.module('idtbeyondAngularDemoApp')
     vm.clearApplicationData = function(){
       localStorageService.clearAll();
       resetDataAndMessage('Application Data cleared.');
+      vm.alertSuccess = true;
     };
 
     vm.saveAppDetails = function(){
       if(!vm.appId || !vm.appKey || !vm.termId){
-        resetDataAndMessage('App ID, App Key & Term ID must both be filled in. Re-enter application details.');
+        resetDataAndMessage('App ID, App Key & Term ID must all be filled in. Re-enter application details.');
+        vm.alertDanger = true;
         return;
       }
       if (!localStorageService.set('appId', vm.appId)){
