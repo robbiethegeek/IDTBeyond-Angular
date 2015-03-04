@@ -20,10 +20,11 @@
     </div>
     <div class="form-group">
       <label for="dev-mode"> Development Mode : </label>
-      <input name="dev-mode" type="checkbox" ng-model="vm.developmentMode" name="development-mode" />
+      <input id="dev-mode" name="dev-mode" type="checkbox" ng-model="vm.developmentMode" name="development-mode" />
     </div>
     <div>
-      <button class="btn-primary pull-right" ng-click="vm.saveAppDetails()">Save App Details</button>
+      <button class="btn btn-primary pull-right" ng-click="vm.saveAppDetails()">
+        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Save App Details</button>
     </div>
   </form>
 </div>

@@ -60,14 +60,14 @@ body {
 }
 .developer-mode {
   padding: 5px 5px 5px 5px;
-  background: #c4c4c4;
-  color: #000000;
+  background: #2f2f2f;
+  color: #d5d5d5;
 }
 
 /* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1024px) {
   .container {
-    max-width: 730px;
+    max-width: 1024px;
   }
 
   /* Remove the padding we set earlier */
