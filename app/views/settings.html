@@ -1,13 +1,17 @@
-<div class="jumbotron">
-  <h1>IATU Demo</h1>
-  <p class="lead">
-    This is an example Angular IATU topup application using IDT Beyond's API.
-  </p>
-
+<div>
+  <h1>Settings:</h1>
+  <p class="lead">This is an example Angular IATU topup application using IDT Beyond's API.</p>
+  <p>Enter your <strong>(app-id, app-key, and terminal_id)</strong> to be used in your example application.</p>
+  <p>This information is saved in an in-browser database, to be retrieved until you clear it below.</p>
 </div>
 
 <div class="row marketing">
-  <div ng-show="vm.message">{{ vm.message }}</div>
+  <div ng-show="vm.message">
+    <p class="alert" ng-class="{'alert-danger': vm.alertDanger, 'alert-success': vm.alertSuccess, 'alert-info': vm.alertInfo}">
+    {{ vm.message }}
+    <button class="pull-right" ng-click="vm.clearMessage()">X</button>
+    </p>
+  </div>
   <form name="settings">
     <div class="form-group">
       <input type="text" class="form-control" ng-model="vm.appId" name="app-id" placeholder="Enter the APP-ID (ex: q1w2e3r4)" />
@@ -20,10 +24,13 @@
     </div>
     <div class="form-group">
       <label for="dev-mode"> Development Mode : </label>
-      <input name="dev-mode" type="checkbox" ng-model="vm.developmentMode" name="development-mode" />
+      <input id="dev-mode" name="dev-mode" type="checkbox" ng-model="vm.developmentMode" name="development-mode" />
     </div>
     <div>
-      <button class="btn-primary pull-right" ng-click="vm.saveAppDetails()">Save App Details</button>
+      <button class="btn btn-primary pull-right" ng-click="vm.saveAppDetails()">
+        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Save</button>
+      <button class="btn btn-danger pull-left" ng-click="vm.clearApplicationData()">
+        <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Clear</button>
     </div>
   </form>
 </div>

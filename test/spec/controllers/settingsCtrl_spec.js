@@ -2,7 +2,6 @@
 
 describe('Controller: SettingsCtrl', function () {
 
-  // load the controller's module
   beforeEach(module('idtbeyondAngularDemoApp'));
 
   var SettingsCtrl, IdtBeyond, scope, localStorageService;
@@ -33,7 +32,8 @@ describe('Controller: SettingsCtrl', function () {
     };
     IdtBeyond = {
       resetAppData: jasmine.createSpy()
-    }
+    };
+
     scope = {};
     SettingsCtrl = $controller('SettingsCtrl as vm', {
       IdtBeyond: IdtBeyond,
@@ -63,7 +63,7 @@ describe('Controller: SettingsCtrl', function () {
     expect(scope.vm.message).toBe('');
     scope.vm.termId = null;
     scope.vm.saveAppDetails();
-    expect(scope.vm.message).toBe('App ID, App Key & Term ID must both be filled in. Re-enter application details.');
+    expect(scope.vm.message).toBe('App ID, App Key & Term ID must all be filled in. Re-enter application details.');
     expect(scope.vm.appId).toEqual('');
     expect(scope.vm.appKey).toEqual('');
     expect(scope.vm.termId).toEqual('');
@@ -71,12 +71,13 @@ describe('Controller: SettingsCtrl', function () {
   });
 
   it('should set the message to success when it saves properly', function () {
-    localStorageService.set = function(value){
+    localStorageService.set = function(){
       return true;
-    }
+    };
+
     expect(scope.vm.message).toBe('');
     scope.vm.saveAppDetails();
-    expect(scope.vm.message).toBe('saved!');
+    expect(scope.vm.message).toBe('Settings successfully saved.');
     expect(IdtBeyond.resetAppData).toHaveBeenCalled();
   });
 });
